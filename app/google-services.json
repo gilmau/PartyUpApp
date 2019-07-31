@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "207690904993",
+    "firebase_url": "https://partyupapp-cd257.firebaseio.com",
+    "project_id": "partyupapp-cd257",
+    "storage_bucket": "partyupapp-cd257.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207690904993:android:c2b5307dfb3e3851",
+        "android_client_info": {
+          "package_name": "com.gilortal.partyup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "207690904993-rl1ki2t6i4cfitfespl0fmn7amv6kaqb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gilortal.partyup",
+            "certificate_hash": "0646c7faf9398db5686a4254319551d61b9692dd"
+          }
+        },
+        {
+          "client_id": "207690904993-ii5oie1o2bna7ngtoiujts9apl1eh336.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD95aoyV1ulgvtj3VVsNDE25LkmilSxL50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "207690904993-ii5oie1o2bna7ngtoiujts9apl1eh336.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

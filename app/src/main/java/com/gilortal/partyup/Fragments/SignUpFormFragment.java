@@ -19,7 +19,6 @@ import com.gilortal.partyup.Interfaces.LoginAuth;
 import com.gilortal.partyup.Interfaces.SendServerResponeToFrags;
 import com.gilortal.partyup.MainActivity;
 import com.gilortal.partyup.R;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,17 +47,17 @@ public class SignUpFormFragment extends Fragment implements View.OnClickListener
     public SignUpFormFragment() {
         // Required empty public constructor
     }
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((MainActivity)getActivity()).serverToFragsListener = this;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity)getActivity()).serverToFragsListener = null;
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        ((MainActivity)getActivity()).serverToFragsListener = this;
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        ((MainActivity)getActivity()).serverToFragsListener = null;
+//    }
 
 
     @Override
@@ -99,8 +98,6 @@ public class SignUpFormFragment extends Fragment implements View.OnClickListener
                     aboutBox.setVisibility(View.GONE);
             }
         });
-
-
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,15 +165,5 @@ public class SignUpFormFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         checkedGenres.add(((CheckBox)v).getText().toString());
-    }
-
-    @Override
-    public void broadcastSnapShot(DocumentSnapshot document) {
-
-    }
-
-    @Override
-    public void broadcastQueryResult(ArrayList queryResult, int requestCode) {
-
     }
 }
