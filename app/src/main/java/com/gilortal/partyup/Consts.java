@@ -15,6 +15,18 @@ public class Consts {
     public static final String DB_USERS = "Users DB";
     public static final String DB_EVENTS = "Events DB";
 
+    /**COLUMN DATA USER**/
+    public static final String COLUMN_NAME = "NAME USER" ;
+    public static final String COLUMN_EMAIL = "EMAIL USER";
+    public static final String COLUMN_PASSWORD = "PASSWORD USER";
+    public static final String COLUMN_GENRES = "GENERS USER";
+    public static final String COLUMN_PIC_URL = "IMAGE USER";
 
-
+    /**COLUMN DATA DJ **/
+    public static final String COLUMN_NAME_DJ = "NAME DJ" ;
+    public static final String COLUMN_EMAIL_DJ = "EMAIL DJ";
+    public static final String COLUMN_PASSWORD_DJ = "PASSWORD DJ";
+    public static final String COLUMN_GENRES_DJ = "GENERS DJ";
+    public static final String COLUMN_PIC_URL_DJ = "IMAGE DJ";
+    public static final String COLUMN_ABOUT = "ABOUT DJ";
 }

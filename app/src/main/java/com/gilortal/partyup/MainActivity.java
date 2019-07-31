@@ -2,8 +2,7 @@ package com.gilortal.partyup;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
@@ -16,21 +15,30 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.gilortal.partyup.Fragments.LoginFragment;
+import com.gilortal.partyup.Fragments.SignUpFormFragment;
+import com.gilortal.partyup.Interfaces.LoginAuth;
+import com.gilortal.partyup.Interfaces.MoveToFrag;
+import com.gilortal.partyup.Interfaces.SendServerResponeToFrags;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MoveToFrag {
+        implements NavigationView.OnNavigationItemSelectedListener, MoveToFrag, LoginAuth {
 
     FirebaseFirestore db;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseAuth.AuthStateListener authStateListener;
+    public SendServerResponeToFrags serverToFragsListener;
 
     Bundle savedInstanceState;
 
@@ -45,6 +53,19 @@ public class MainActivity extends AppCompatActivity
     protected void onStop() {
         super.onStop();
         firebaseAuth.removeAuthStateListener(authStateListener);
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment instanceof LoginFragment) {
+            ((LoginFragment) fragment).loginAuth = this;
+            ((LoginFragment) fragment).moveToFrag = this;
+        }
+        else if (fragment instanceof SignUpFormFragment) {
+        ((SignUpFormFragment) fragment).loginAuth = this;
+    }
+
     }
 
 
@@ -191,9 +212,36 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+//    @Override
+//    public void sendToServer(HashMap updates, String docId, String collectionName) {
+//        db.collection(collectionName).document(docId).update(updates);
+//    }
+
+    @Override
+    public void gotToFrag(int moveToFragment, String docId, String collectionName) {
+        Toast.makeText(this, "i'm in goToFrag", Toast.LENGTH_SHORT).show();
+        changeFragmentDisplay(moveToFragment);
+        if(docId != null)
+            getSnapshotFromServer(docId, collectionName);
+    }
+
     @Override
     public void goToSignUpForm(int signUpFragment) {
         changeFragmentDisplay(signUpFragment);
+    }
+
+    private void getSnapshotFromServer(String docId, String collectionName){
+        db.collection(collectionName).document(docId).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            serverToFragsListener.broadcastSnapShot(task.getResult());
+
+                        }
+                    }
+                });
+
     }
 
     private void changeFragmentDisplay(int displayFragment) {
@@ -211,11 +259,11 @@ public class MainActivity extends AppCompatActivity
                     fragmentTransaction.replace(R.id.fragment_container, loginFragment);
                     fragmentTransaction.addToBackStack(null);
                     break;
-//                case Consts.SIGNUP_FORM_FRAG:
-//                    SignUpFormFragment signUpFormFragment = new SignUpFormFragment();
-//                    fragmentTransaction.replace(R.id.fragment_container, signUpFormFragment);
-//                    fragmentTransaction.addToBackStack(null);
-//                    break;
+                case Consts.SIGNUP_FORM_FRAG:
+                    SignUpFormFragment signUpFormFragment = new SignUpFormFragment();
+                    fragmentTransaction.replace(R.id.fragment_container, signUpFormFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    break;
 //                case Consts.DJ_PROFILE_FRAG:
 //                    fragmentTransaction.replace(R.id.fragment_container, new DjProfileFragment());
 //                    fragmentTransaction.addToBackStack(null);
@@ -234,4 +282,50 @@ public class MainActivity extends AppCompatActivity
             Log.i("POSITION", "done commit");
         }
     }
-}
+
+    @Override
+    public void signInUser(String email, String password) {
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+
+                        }
+                        else {
+                            Toast.makeText(MainActivity.this, "E-Mail or Password Incorrect", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void signUpForm(final HashMap userData, final String collection) {
+        String email = userData.get(Consts.COLUMN_EMAIL).toString();
+        String password = userData.get(Consts.COLUMN_PASSWORD).toString();
+        userData.remove(Consts.COLUMN_EMAIL);
+        userData.remove(Consts.COLUMN_PASSWORD);
+        firebaseAuth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            FirebaseUser curUser = firebaseAuth.getCurrentUser();
+                            db.collection(collection).document(curUser.getUid()).set(userData);
+                            Toast.makeText(MainActivity.this, "Signed Up Successfully ", Toast.LENGTH_SHORT).show();
+                            Log.d("signup in activity" , "signed up successfuly");
+                        }
+                        else {
+                            Toast.makeText(MainActivity.this, "signed up failed ", Toast.LENGTH_SHORT).show();
+                            Log.d("signup in activity" , "signed up failed");
+                        }
+                    }
+                });
+
+
+
+    }
+
+}//MAIN ACTIVITY END
+

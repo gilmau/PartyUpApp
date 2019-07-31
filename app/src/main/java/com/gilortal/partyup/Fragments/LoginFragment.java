@@ -1,7 +1,5 @@
 package com.gilortal.partyup.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,15 +9,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.gilortal.partyup.Consts;
-import com.gilortal.partyup.MoveToFrag;
+import com.gilortal.partyup.Interfaces.LoginAuth;
+import com.gilortal.partyup.Interfaces.MoveToFrag;
 import com.gilortal.partyup.R;
 
 
 public class LoginFragment extends Fragment {
 
+    String email = "";
+    String password = "";
     TextView emailTV, passwordTV;
     Button signInButton, signUpButton;
     public MoveToFrag moveToFrag;
+    public LoginAuth loginAuth;
 
 
 
@@ -42,6 +44,15 @@ public class LoginFragment extends Fragment {
         signUpButton = view.findViewById(R.id.signup_button_login_fragment);
 
 
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                email = emailTV.getText().toString();
+                password = passwordTV.getText().toString();
+                loginAuth.signInUser(email, password);
+            }
+        });
+
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,12 +63,6 @@ public class LoginFragment extends Fragment {
         return view;
 
     }
-
-
-
-
-
-
 
 
 
